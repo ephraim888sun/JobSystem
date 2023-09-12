@@ -1,5 +1,5 @@
 #include "jobworkerthread.h"
-// #include 'jobsystem.h'
+#include "jobsystem.h"
 
 JobWorkerThread::JobWorkerThread(const char *uniqueName, unsigned long workerJobChannels, JobSystem *jobSystem) : 
     m_uniqueName(uniqueName),
