@@ -20,15 +20,16 @@ JobWorkerThread::~JobWorkerThread(){
 
 void JobWorkerThread::StartUp(){
     m_thread = new std::thread(WorkerThreadMain, this);
-}
+};
 
-void JobWorkerThread::Work(){
+void JobWorkerThread::Work()
+{
     while(!IsStoppping()){
         m_workerStatusMutex.lock();
         unsigned long workerJobChannels = m_workerJobChannels;
         m_workerStatusMutex.unlock();
-        
-        Job* job = m_jobSystem->ClaimAJob(m_workerJobChannels);
+
+        Job *job = m_jobSystem->ClaimAJob(m_workerJobChannels);
         if(job){
             job->Execute();
             m_jobSystem->OnJobCompleted(job);
@@ -36,4 +37,32 @@ void JobWorkerThread::Work(){
 
         std::this_thread::sleep_for(std::chrono::microseconds(1));
     }
+};
+
+void JobWorkerThread::ShutDown()
+{
+    m_workerStatusMutex.lock();
+    m_isStopping = true;
+    m_workerStatusMutex.unlock();
+};
+
+bool JobWorkerThread::IsStoppping() const
+{
+    m_workerStatusMutex.lock();
+    bool shouldClose = m_isStopping;
+    m_workerStatusMutex.unlock();
+    return shouldClose;
+};
+
+void JobWorkerThread::SetWorkerJobChannels(unsigned long workerJobChannels)
+{
+    m_workerStatusMutex.lock();
+    m_workerJobChannels = workerJobChannels;
+    m_workerStatusMutex.unlock();
+}
+
+void JobWorkerThread::WorkerThreadMain(void *workThreadObject)
+{
+    JobWorkerThread *thisWorker = (JobWorkerThread *)workerThreadObject;
+    thisWorker->Work();
 }
