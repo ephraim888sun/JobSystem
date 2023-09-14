@@ -37,6 +37,40 @@ int main(void)
         {
             rjb->data.push_back(i + j);
         }
+        jobs.push_back(rjb);
+    }
+
+    std::cout << "Queueing Jobs" << std::endl;
+
+    std::vector<Job *>::iterator it = jobs.begin();
+
+    for (; it != jobs.end(); it++)
+    {
+        js->QueueJob(*it);
+    }
+
+    int running = 1;
+
+    while(running) {
+        std::string command;
+        std::cout << "Enter stop, destroy, finish, status: \n";
+        std::cin >> command;
+
+        if(command == "stop") {
+            running = 0;
+
+        } else if (command =="destroy") {
+            js->FinishCompletedJobs();
+            js->Destroy();
+            running =0;
+        } else if (command == "finish") {
+            js->FinishCompletedJobs();
+            std::cout << "Total Jobs Completed" << js->totalJobs << std::endl;
+        } else if (command == "status") {
+            std::cout << "Job 0 Status: " << js->GetJobStatus(0) << std::endl;
+        } else {
+            std::cout << "Invalid Command" << std::endl;
+        }
     }
 
     return 0;
