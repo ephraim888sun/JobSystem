@@ -7,7 +7,7 @@
 
 class Job
 {
-    friend class Jobsystem;
+    friend class JobSystem;
     friend class JobWorkerThread;
 
 public:

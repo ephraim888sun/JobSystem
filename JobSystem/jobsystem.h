@@ -12,7 +12,7 @@ class JobWorkerThread;
 enum JobStatus
 {
     JOB_STATUS_NEVER_SEEN,
-    JOB_STATUS_QUEUE,
+    JOB_STATUS_QUEUED,
     JOB_STATUS_RUNNING,
     JOB_STATUS_COMPLETED,
     JOB_STATUS_RETIRED,
@@ -48,11 +48,13 @@ public:
 
     // Status Queries
     JobStatus GetJobStatus(int jobID) const;
-    bool isJobCompelte(int jobID) const;
+    bool isJobComplete(int jobID) const;
 
 private:
     Job *ClaimAJob(unsigned long workerJobFlags);
     void OnJobCompleted(Job *jobJustExecuted);
+    void FinishCompletedJobs();
+    void FinishJob(int jobId);
 
     static JobSystem *s_jobSystem;
 
