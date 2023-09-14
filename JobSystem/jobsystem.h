@@ -50,11 +50,12 @@ public:
     JobStatus GetJobStatus(int jobID) const;
     bool isJobComplete(int jobID) const;
 
+    void FinishCompletedJobs();
+    void FinishJob(int jobId);
+
 private:
     Job *ClaimAJob(unsigned long workerJobFlags);
     void OnJobCompleted(Job *jobJustExecuted);
-    void FinishCompletedJobs();
-    void FinishJob(int jobId);
 
     static JobSystem *s_jobSystem;
 

@@ -22,7 +22,7 @@ class JobWorkerThread {
 
     bool IsStoppping() const;
     void SetWorkerJobChannels(unsigned long workerJobChannels);
-    static void WorkerThreadMain(void* workThreadObject);
+    static void WorkerThreadMain(void* workerThreadObject);
 
     private:
     const char      *m_uniqueName;
