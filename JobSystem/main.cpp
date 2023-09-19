@@ -27,7 +27,7 @@ int main(void)
 
     std::vector<Job *> jobs;
 
-    CompileJob *cjb = new CompileJob(0XFFFFFFFF, 1);
+    CompileJob *cjb = new CompileJob(0xFFFFFFFF, 1);
     jobs.push_back(cjb);
 
     for (int j = 0; j < 10; j++)
@@ -53,7 +53,7 @@ int main(void)
 
     while(running) {
         std::string command;
-        std::cout << "Enter stop, destroy, finish, status: \n";
+        std::cout << "Enter stop, destroy, finish, finishjob, status: \n";
         std::cin >> command;
 
         if(command == "stop") {
@@ -66,9 +66,17 @@ int main(void)
         } else if (command == "finish") {
             js->FinishCompletedJobs();
             std::cout << "Total Jobs Completed" << js->totalJobs << std::endl;
-        } else if (command == "status") {
+        }
+        else if (command == "finishjob")
+        {
+            js->FinishCompletedJobs();
+        }
+        else if (command == "status")
+        {
             std::cout << "Job 0 Status: " << js->GetJobStatus(0) << std::endl;
-        } else {
+        }
+        else
+        {
             std::cout << "Invalid Command" << std::endl;
         }
     }

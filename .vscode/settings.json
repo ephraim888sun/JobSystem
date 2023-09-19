@@ -67,5 +67,6 @@
         "compare": "cpp",
         "concepts": "cpp",
         "algorithm": "cpp"
-    }
+    },
+    "cmake.sourceDirectory": "/Users/ephraim888sun/Code/CS3341/project/JobSystem"
 }

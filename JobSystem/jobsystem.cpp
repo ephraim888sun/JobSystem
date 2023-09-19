@@ -115,7 +115,7 @@ JobStatus JobSystem::GetJobStatus(int jobID) const
 
 bool JobSystem::isJobComplete(int jobID) const
 {
-    return JobStatus(jobID) == JOB_STATUS_COMPLETED;
+    return (GetJobStatus(jobID)) == (JOB_STATUS_COMPLETED);
 }
 
 void JobSystem::FinishCompletedJobs()
@@ -140,9 +140,10 @@ void JobSystem::FinishJob(int jobID)
     {
         JobStatus jobStatus = GetJobStatus(jobID);
         {
-            if (jobStatus == JOB_STATUS_NEVER_SEEN || JOB_STATUS_RETIRED)
+            if ((jobStatus == JOB_STATUS_NEVER_SEEN) || (jobStatus == JOB_STATUS_RETIRED))
             {
                 std::cout << "ERROR: Waiting for Job(#)" << jobID << ") - no such job in JobSystem" << std::endl;
+                return;
             }
         }
 
@@ -217,6 +218,7 @@ Job *JobSystem::ClaimAJob(unsigned long workerJobChannels)
             m_jobsQueued.erase(queuedJobIter);
             m_jobsRunning.push_back(claimedJob);
             m_jobHistory[claimedJob->m_jobID].m_jobStatus = JOB_STATUS_RUNNING;
+            m_jobHistoryMutex.unlock();
             break;
         }
     }
