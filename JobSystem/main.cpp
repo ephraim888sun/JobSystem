@@ -69,7 +69,8 @@ int main(void)
         }
         else if (command == "finishjob")
         {
-            js->FinishCompletedJobs();
+            std::cout << "Finishing Job 0" << std::endl;
+            js->FinishJob(0);
         }
         else if (command == "status")
         {

@@ -57,7 +57,7 @@ void JobSystem::CreateWorkerThread(const char *uniqueName, unsigned long workerJ
 
     m_workerThreadsMutex.lock();
     m_workerThreads.push_back(newWorker);
-    m_workerThreadsMutex.lock();
+    m_workerThreadsMutex.unlock();
 
     m_workerThreads.back()->StartUp();
 };
@@ -180,7 +180,7 @@ void JobSystem::OnJobCompleted(Job *jobJustExecuted)
 {
     totalJobs++;
     m_jobsCompletedMutex.lock();
-    m_jobsCompletedMutex.unlock();
+    m_jobsRunningMutex.lock();
 
     std::deque<Job *>::iterator runningJobItr = m_jobsRunning.begin();
     for (; runningJobItr != m_jobsRunning.end(); ++runningJobItr)
@@ -196,35 +196,37 @@ void JobSystem::OnJobCompleted(Job *jobJustExecuted)
         }
     }
 
-    m_jobsRunningMutex.unlock();
     m_jobsCompletedMutex.unlock();
+    m_jobsRunningMutex.unlock();
 }
 
 Job *JobSystem::ClaimAJob(unsigned long workerJobChannels)
 {
     m_jobsQueuedMutex.lock();
-    m_jobsRunningMutex.unlock();
+    m_jobsRunningMutex.lock();
 
     Job *claimedJob = nullptr;
-    std::deque<Job *>::iterator queuedJobIter = m_jobsQueued.begin();
-    for (; queuedJobIter != m_jobsQueued.end(); ++queuedJobIter)
+    std::deque<Job *>::iterator queuedJobItr = m_jobsQueued.begin();
+    for (; queuedJobItr != m_jobsQueued.end(); ++queuedJobItr)
     {
-        Job *queuedJob = *queuedJobIter;
+        Job *queuedJob = *queuedJobItr;
 
         if ((queuedJob->m_jobChannels & workerJobChannels) != 0)
         {
             claimedJob = queuedJob;
+
             m_jobHistoryMutex.lock();
-            m_jobsQueued.erase(queuedJobIter);
-            m_jobsRunning.push_back(claimedJob);
+            m_jobsQueued.erase(queuedJobItr);
+            m_jobsRunning.push_back(queuedJob);
             m_jobHistory[claimedJob->m_jobID].m_jobStatus = JOB_STATUS_RUNNING;
             m_jobHistoryMutex.unlock();
+
             break;
         }
     }
 
-    m_jobsQueuedMutex.lock();
     m_jobsRunningMutex.unlock();
+    m_jobsQueuedMutex.unlock();
 
     return claimedJob;
 }

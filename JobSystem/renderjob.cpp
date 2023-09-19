@@ -17,7 +17,7 @@ void RenderJob::Execute()
     }
 
     data[0] = total;
-    std::cout << "Job " << this->GetUniqueID() << "Has Been Execute" << std::endl;
+    std::cout << "Job " << this->GetUniqueID() << " Has Been Executed" << std::endl;
 }
 
 void RenderJob::JobCompleteCallback() {
