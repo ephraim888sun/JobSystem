@@ -65,7 +65,7 @@ int main(void)
             running =0;
         } else if (command == "finish") {
             js->FinishCompletedJobs();
-            std::cout << "Total Jobs Completed" << js->totalJobs << std::endl;
+            std::cout << "Total Jobs Completed: " << js->totalJobs << std::endl;
         }
         else if (command == "finishjob")
         {
